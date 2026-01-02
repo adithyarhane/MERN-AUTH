@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { MailCheck, ShieldCheck, RotateCcw } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useAppContext } from "../context/AppContext";
-import { toast } from "react-toastify";
 import useTitle from "../components/useTitle";
+import { useAuthContext } from "../context/AuthContext";
 
 const VerifyEmail = () => {
-  const { backendUrl, setIsLoggedin, isLoggedin, userData, getUserData } =
-    useAppContext();
+  const { isLoggedin, userData, verifyAccount } = useAuthContext();
   const navigate = useNavigate();
 
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -64,29 +61,6 @@ const VerifyEmail = () => {
     document.getElementById(`otp-${nextIndex}`)?.focus();
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    axios.defaults.withCredentials = true;
-
-    const enteredOtp = otp.join("");
-    try {
-      const res = await axios.post(backendUrl + "/api/auth/verify-account", {
-        otp: enteredOtp,
-      });
-      if (res.data.success) {
-        toast.success(res.data.message);
-        setIsLoggedin(true);
-        getUserData();
-        navigate("/");
-      } else {
-        toast.error(res.data.message);
-      }
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-
   useEffect(() => {
     isLoggedin && userData && userData.isAccountVerified && navigate("/");
   }, [isLoggedin, userData]);
@@ -115,7 +89,7 @@ const VerifyEmail = () => {
         </div>
 
         {/* OTP FORM */}
-        <form onSubmit={handleSubmit} className="mt-8">
+        <form onSubmit={(e) => verifyAccount(e, otp)} className="mt-8">
           {/* OTP INPUTS */}
           <div
             className="flex justify-between gap-2"

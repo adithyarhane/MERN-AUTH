@@ -1,28 +1,10 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { MoveRight } from "lucide-react";
-import { toast } from "react-toastify";
-import axios from "axios";
 import { useAuthContext } from "../context/AuthContext";
 
 const Navbar = () => {
-  const navigate = useNavigate();
-  const { userData, backendUrl, logout } = useAuthContext();
-
-  const sendVerificationOtp = async () => {
-    try {
-      axios.defaults.withCredentials = true;
-      const res = await axios.post(backendUrl + "/api/auth/send-verify-otp");
-      if (res.data.success) {
-        navigate("/verify-email");
-        toast.success(res.data.message);
-      } else {
-        toast.error(res.data.message);
-      }
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
+  const { userData, sendVerificationOtp, logout } = useAuthContext();
 
   return (
     <div className="flex justify-between px-12 py-6 text-black">

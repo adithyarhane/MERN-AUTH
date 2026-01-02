@@ -89,6 +89,29 @@ export const AuthContextProvider = ({ children }) => {
     }
   };
 
+  const verifyAccount = async (e, otp) => {
+    e.preventDefault();
+
+    axios.defaults.withCredentials = true;
+
+    const enteredOtp = otp.join("");
+    try {
+      const res = await axios.post(backendUrl + "/api/auth/verify-account", {
+        otp: enteredOtp,
+      });
+      if (res.data.success) {
+        toast.success(res.data.message);
+        setIsLoggedin(true);
+        getUserData();
+        navigate("/");
+      } else {
+        toast.error(res.data.message);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   const logout = async () => {
     try {
       axios.defaults.withCredentials = true;
@@ -119,6 +142,7 @@ export const AuthContextProvider = ({ children }) => {
     setMode,
     onRegister,
     sendVerificationOtp,
+    verifyAccount,
     logout,
   };
 
