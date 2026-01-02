@@ -1,13 +1,13 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MoveRight } from "lucide-react";
-import { useAppContext } from "../context/AppContext";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { useAuthContext } from "../context/AuthContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { userData, backendUrl, setUserData, setIsLoggedin } = useAppContext();
+  const { userData, backendUrl, setUserData, setIsLoggedin } = useAuthContext();
 
   const sendVerificationOtp = async () => {
     try {

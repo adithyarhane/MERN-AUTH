@@ -9,10 +9,8 @@ import {
   UserRound,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAppContext } from "../context/AppContext";
-import axios from "axios";
-import { toast } from "react-toastify";
 import useTitle from "../components/useTitle";
+import { useAuthContext } from "../context/AuthContext";
 
 /* ---------------- PASSWORD STRENGTH CHECKER ---------------- */
 const checkPasswordStrength = (password = "") => {
@@ -32,53 +30,15 @@ const checkPasswordStrength = (password = "") => {
 
 export default function Login() {
   const navigate = useNavigate();
-
-  const [mode, setMode] = useState("login");
   const [showPass, setShowPass] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordStrength, setPasswordStrength] = useState("");
-  const [loading, setLoading] = useState(false);
+
+  const { mode, setMode, loading, onRegister } = useAuthContext();
 
   useTitle(mode === "login" ? "Login" : "Register");
-
-  const { backendUrl, setIsLoggedin, getUserData } = useAppContext();
-
-  const onSubmitHandler = async (e) => {
-    e.preventDefault();
-    if (loading) return;
-
-    if (mode === "signup" && passwordStrength === "weak") {
-      toast.error("Password is too weak");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      axios.defaults.withCredentials = true;
-
-      const url = mode === "signup" ? "/api/auth/register" : "/api/auth/login";
-
-      const payload =
-        mode === "signup" ? { name, email, password } : { email, password };
-
-      const res = await axios.post(backendUrl + url, payload);
-
-      if (res.data.success) {
-        setIsLoggedin(true);
-        getUserData();
-        navigate("/");
-      } else {
-        toast.error(res.data.message);
-      }
-    } catch (error) {
-      console.log(error.message);
-      toast.error("Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="relative min-h-screen flex items-center justify-center px-6 bg-gray-50">
@@ -211,7 +171,9 @@ export default function Login() {
 
         {/* SUBMIT BUTTON */}
         <button
-          onClick={onSubmitHandler}
+          onClick={(e) =>
+            onRegister(e, name, email, password, passwordStrength)
+          }
           disabled={loading}
           className={`w-full mt-8 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 ${
             loading

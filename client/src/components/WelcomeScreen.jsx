@@ -1,8 +1,9 @@
 import React from "react";
-import { useAppContext } from "../context/AppContext";
+
+import { useAuthContext } from "../context/AuthContext";
 
 export default function WelcomeScreen() {
-  const { userData } = useAppContext();
+  const { userData } = useAuthContext();
 
   return (
     <div className=" h-[calc(100vh-20vh)] flex items-center justify-center  px-4">
