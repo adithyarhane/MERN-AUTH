@@ -74,6 +74,21 @@ export const AuthContextProvider = ({ children }) => {
     }
   };
 
+  const sendVerificationOtp = async () => {
+    try {
+      axios.defaults.withCredentials = true;
+      const res = await axios.post(backendUrl + "/api/auth/send-verify-otp");
+      if (res.data.success) {
+        navigate("/verify-email");
+        toast.success(res.data.message);
+      } else {
+        toast.error(res.data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
   const logout = async () => {
     try {
       axios.defaults.withCredentials = true;
@@ -103,6 +118,7 @@ export const AuthContextProvider = ({ children }) => {
     mode,
     setMode,
     onRegister,
+    sendVerificationOtp,
     logout,
   };
 
