@@ -1,30 +1,8 @@
-import React, { useState } from "react";
 import { Mail, ArrowRight, Backpack } from "lucide-react";
-import axios from "axios";
-import { toast } from "react-toastify";
-import { useAppContext } from "../context/AppContext";
+import { useAuthContext } from "../context/AuthContext";
 
 const ResetPasswordEmailForm = ({ setIsEmailSent, email, setEmail }) => {
-  const { backendUrl } = useAppContext();
-
-  const submitEmail = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post(backendUrl + "/api/auth/send-reset-otp", {
-        email,
-      });
-
-      if (res.data.success) {
-        toast.success(res.data.message);
-        setIsEmailSent(true);
-      } else {
-        toast.error(res.data.message);
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error(error.message);
-    }
-  };
+  const { sendResetOtp } = useAuthContext();
 
   return (
     <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8">
@@ -56,7 +34,7 @@ const ResetPasswordEmailForm = ({ setIsEmailSent, email, setEmail }) => {
         </div>
 
         <button
-          onClick={(e) => submitEmail(e)}
+          onClick={(e) => sendResetOtp(e, email, setIsEmailSent)}
           className="w-full flex items-center justify-center gap-2 bg-black text-white py-3 rounded-xl font-medium hover:opacity-90 transition"
         >
           Send OTP <ArrowRight size={18} />

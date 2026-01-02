@@ -1,36 +1,12 @@
 import React, { useState } from "react";
 import { Lock, Eye, EyeOff, ShieldCheck } from "lucide-react";
-import { toast } from "react-toastify";
-import axios from "axios";
-import { useAppContext } from "../context/AppContext";
-import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../context/AuthContext";
 
 const NewPasswordForm = ({ resetOtp, email }) => {
-  const navigate = useNavigate();
-  const { backendUrl } = useAppContext();
+  const { resetPassword } = useAuthContext();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (password !== confirmPassword)
-      return toast.error("Passwords do not match");
-
-    try {
-      const res = await axios.post(backendUrl + "/api/auth/reset-password", {
-        email,
-        otp: resetOtp,
-        newPassword: password,
-      });
-      if (res.data.success) {
-        toast.success(res.data.message);
-        navigate("/login");
-      }
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
 
   return (
     <div className="w-full max-w-md bg-white border border-gray-200 rounded-3xl shadow-xl p-10">
@@ -109,7 +85,9 @@ const NewPasswordForm = ({ resetOtp, email }) => {
 
         {/* SUBMIT */}
         <button
-          onClick={(e) => handleSubmit(e)}
+          onClick={(e) =>
+            resetPassword(e, password, confirmPassword, email, resetOtp)
+          }
           className="
               w-full py-3 mt-2
               bg-black text-white font-medium

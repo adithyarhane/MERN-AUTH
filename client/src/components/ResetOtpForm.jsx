@@ -1,11 +1,9 @@
 import React, { useRef, useState } from "react";
 import { MailCheck } from "lucide-react";
-import { toast } from "react-toastify";
-import axios from "axios";
-import { useAppContext } from "../context/AppContext";
+import { useAuthContext } from "../context/AuthContext";
 
 const ResetOtpForm = ({ setIsOtpSubmitted, setResetOtp }) => {
-  const { backendUrl } = useAppContext();
+  const { onSubmitResetOTP } = useAuthContext();
   const OTP_LENGTH = 6;
   const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(""));
   const inputsRef = useRef([]);
@@ -39,19 +37,6 @@ const ResetOtpForm = ({ setIsOtpSubmitted, setResetOtp }) => {
     inputsRef.current[newOtp.length - 1].focus();
   };
 
-  const onSubmitOTP = async (e) => {
-    e.preventDefault();
-
-    try {
-      const finalOtp = otp.join("");
-      if (finalOtp.length === OTP_LENGTH) {
-        setResetOtp(finalOtp);
-        setIsOtpSubmitted(true);
-      }
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
   return (
     <div className="w-full max-w-md bg-white border border-gray-200 rounded-3xl shadow-xl p-10">
       {/* HEADER */}
@@ -92,7 +77,9 @@ const ResetOtpForm = ({ setIsOtpSubmitted, setResetOtp }) => {
 
       {/* VERIFY BUTTON */}
       <button
-        onClick={(e) => onSubmitOTP(e)}
+        onClick={(e) =>
+          onSubmitResetOTP(e, otp, OTP_LENGTH, setResetOtp, setIsOtpSubmitted)
+        }
         className="
             w-full py-3 bg-black text-white font-medium
             rounded-xl hover:bg-gray-800 transition

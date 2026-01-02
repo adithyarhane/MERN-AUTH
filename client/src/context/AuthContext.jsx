@@ -112,6 +112,71 @@ export const AuthContextProvider = ({ children }) => {
     }
   };
 
+  const sendResetOtp = async (e, email, setIsEmailSent) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post(backendUrl + "/api/auth/send-reset-otp", {
+        email,
+      });
+
+      if (res.data.success) {
+        toast.success(res.data.message);
+        setIsEmailSent(true);
+      } else {
+        toast.error(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
+
+  const onSubmitResetOTP = async (
+    e,
+    otp,
+    OTP_LENGTH,
+    setResetOtp,
+    setIsOtpSubmitted
+  ) => {
+    e.preventDefault();
+
+    try {
+      const finalOtp = otp.join("");
+      if (finalOtp.length === OTP_LENGTH) {
+        setResetOtp(finalOtp);
+        setIsOtpSubmitted(true);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const resetPassword = async (
+    e,
+    password,
+    confirmPassword,
+    email,
+    resetOtp
+  ) => {
+    e.preventDefault();
+    if (password !== confirmPassword)
+      return toast.error("Passwords do not match");
+
+    try {
+      const res = await axios.post(backendUrl + "/api/auth/reset-password", {
+        email,
+        otp: resetOtp,
+        newPassword: password,
+      });
+      if (res.data.success) {
+        toast.success(res.data.message);
+        navigate("/login");
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
   const logout = async () => {
     try {
       axios.defaults.withCredentials = true;
@@ -143,6 +208,9 @@ export const AuthContextProvider = ({ children }) => {
     onRegister,
     sendVerificationOtp,
     verifyAccount,
+    sendResetOtp,
+    onSubmitResetOTP,
+    resetPassword,
     logout,
   };
 
