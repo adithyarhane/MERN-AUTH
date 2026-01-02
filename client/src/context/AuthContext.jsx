@@ -74,6 +74,21 @@ export const AuthContextProvider = ({ children }) => {
     }
   };
 
+  const logout = async () => {
+    try {
+      axios.defaults.withCredentials = true;
+
+      const res = await axios.post(backendUrl + "/api/auth/logout");
+      if (res.data.success) {
+        setIsLoggedin(false);
+        setUserData(false);
+        navigate("/");
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
   useEffect(() => {
     getAuthState();
   }, []);
@@ -88,6 +103,7 @@ export const AuthContextProvider = ({ children }) => {
     mode,
     setMode,
     onRegister,
+    logout,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

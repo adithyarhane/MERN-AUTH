@@ -7,7 +7,7 @@ import { useAuthContext } from "../context/AuthContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { userData, backendUrl, setUserData, setIsLoggedin } = useAuthContext();
+  const { userData, backendUrl, logout } = useAuthContext();
 
   const sendVerificationOtp = async () => {
     try {
@@ -24,20 +24,6 @@ const Navbar = () => {
     }
   };
 
-  const logout = async () => {
-    try {
-      axios.defaults.withCredentials = true;
-
-      const res = await axios.post(backendUrl + "/api/auth/logout");
-      if (res.data.success) {
-        setIsLoggedin(false);
-        setUserData(false);
-        navigate("/");
-      }
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
   return (
     <div className="flex justify-between px-12 py-6 text-black">
       <Link to={"/"} className="text-3xl font-bold ">
