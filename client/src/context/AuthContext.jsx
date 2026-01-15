@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const AuthContext = createContext();
+axios.defaults.withCredentials = true;
 
 export const AuthContextProvider = ({ children }) => {
   const navigate = useNavigate();
